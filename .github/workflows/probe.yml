@@ -12,12 +12,13 @@ jobs:
           DOMAIN: ${{ secrets.DOMAIN }}
         run: |
           echo "domain_len=${#DOMAIN}"
-          URL="https://${DOMAIN}/check?sstp=vpn:vpn@public-vpn-114.opengw.net%3A443"
-          echo "url=$URL"
-          curl -sS -m 40 -o /tmp/out.txt -w "http_code=%{http_code}\n" "$URL" || echo "curl_exit=$?"
-          echo "---- body head ----"
-          head -c 600 /tmp/out.txt || true
+          echo "---- hello worker ----"
+          curl -sS -m 20 -w "hello_code=%{http_code}\n" "https://hello-ds8.yang16696612619.workers.dev/" || echo "hello_fail=$?"
           echo
-          echo "---- root ----"
+          echo "---- check worker root ----"
           curl -sS -m 30 -o /tmp/root.txt -w "root_code=%{http_code}\n" "https://${DOMAIN}/" || echo "root_fail=$?"
           head -c 300 /tmp/root.txt || true
+          echo
+          echo "---- check worker /check ----"
+          curl -sS -m 40 -o /tmp/out.txt -w "http_code=%{http_code}\n" "https://${DOMAIN}/check?sstp=vpn:vpn@public-vpn-114.opengw.net%3A443" || echo "curl_exit=$?"
+          head -c 400 /tmp/out.txt || true
