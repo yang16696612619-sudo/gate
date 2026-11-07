@@ -71,6 +71,9 @@ jobs:
           MIN_SUCCESS_RATIO: '0'
         run: python vpngate.py
 
+      - name: Trim subscription to top 15 nodes
+        run: python trim_nodes.py
+
       - name: Ensure GitHub Pages is enabled
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
